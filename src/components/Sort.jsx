@@ -1,13 +1,17 @@
 import React from 'react';
+import {SortContext} from "../pages/Home.jsx";
 
 function Sort() {
     const [isOpen, setIsOpen] = React.useState(false);
-    const [selectedSort, setSelectedSort] = React.useState(0);
-
-    const sortTypes = ['популярности', 'цене', 'алфавиту'];
+    const {sortType, setSortType} = React.useContext(SortContext);
+    const sortTypes = [
+        { type: 'rating', title: 'популярности'},
+        { type: 'price', title: 'цене' },
+        { type: 'title', title: 'алфавиту' }
+    ]
 
     const selectSortType = (i) => {
-        setSelectedSort(i);
+        setSortType(i);
         setIsOpen(false);
     }
 
@@ -29,7 +33,7 @@ function Sort() {
                 <b>Сортировка по:</b>
                 <span
                     onClick={() => setIsOpen(!isOpen)}
-                >{sortTypes[selectedSort]}</span>
+                >{sortType.title}</span>
             </div>
             {isOpen &&
                 (<div className="sort__popup">
@@ -37,9 +41,9 @@ function Sort() {
                         {sortTypes.map((item, i) => (
                             <li
                                 key={i}
-                                className={i === selectedSort ? "active" : ""}
-                                onClick={() => selectSortType(i)}
-                            >{item}</li>
+                                className={item.title === sortType.title ? "active" : ""}
+                                onClick={() => selectSortType(item)}
+                            >{item.title}</li>
                         ))}
                     </ul>
                 </div>)

@@ -1,9 +1,9 @@
 import React from 'react';
+import categories from "../data/categories.json";
+import {CategoryContext} from "../pages/Home.jsx";
 
 function Categories () {
-    const categories = ['Все', 'Мясные','Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
-
-    const [activeCategory, setActiveCategory] = React.useState(0);
+    const {activeCategory, setActiveCategory} = React.useContext(CategoryContext);
 
     return (
         <div className="categories">
@@ -12,9 +12,9 @@ function Categories () {
                     categories.map((category, index) => (
                         <li
                             key={index}
-                            onClick={() => setActiveCategory(index)}
-                            className={activeCategory === index ? 'active' : ''}
-                        >{category}</li>
+                            onClick={() => setActiveCategory(category)}
+                            className={activeCategory.id === category.id ? 'active' : ''}
+                        >{category.title}</li>
                     ))
                 }
             </ul>
