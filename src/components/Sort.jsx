@@ -1,17 +1,15 @@
 import React from 'react';
-import {SortContext} from "../pages/Home.jsx";
+import { useSelector, useDispatch } from 'react-redux';
+import { setSort } from '../redux/slices/filterSlice.js';
+import sortTypes from '../data/sortTypes.json';
 
 function Sort() {
     const [isOpen, setIsOpen] = React.useState(false);
-    const {sortType, setSortType} = React.useContext(SortContext);
-    const sortTypes = [
-        { type: 'rating', title: 'популярности'},
-        { type: 'price', title: 'цене' },
-        { type: 'title', title: 'алфавиту' }
-    ]
+    const sort = useSelector(state => state.filter.sort);
+    const dispatch = useDispatch();
 
     const selectSortType = (i) => {
-        setSortType(i);
+        dispatch(setSort(i));
         setIsOpen(false);
     }
 
@@ -33,7 +31,7 @@ function Sort() {
                 <b>Сортировка по:</b>
                 <span
                     onClick={() => setIsOpen(!isOpen)}
-                >{sortType.title}</span>
+                >{sort.title}</span>
             </div>
             {isOpen &&
                 (<div className="sort__popup">
@@ -41,7 +39,7 @@ function Sort() {
                         {sortTypes.map((item, i) => (
                             <li
                                 key={i}
-                                className={item.title === sortType.title ? "active" : ""}
+                                className={item.title === sort.title ? "active" : ""}
                                 onClick={() => selectSortType(item)}
                             >{item.title}</li>
                         ))}

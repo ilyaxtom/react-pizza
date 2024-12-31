@@ -1,9 +1,11 @@
 import React from 'react';
+import { useSelector, useDispatch } from "react-redux";
+import { setCategoryId } from "../redux/slices/filterSlice.js";
 import categories from "../data/categories.json";
-import {CategoryContext} from "../pages/Home.jsx";
 
 function Categories () {
-    const {activeCategory, setActiveCategory} = React.useContext(CategoryContext);
+    const dispatch = useDispatch();
+    const categoryId = useSelector((state) => state.filter.categoryId);
 
     return (
         <div className="categories">
@@ -12,8 +14,8 @@ function Categories () {
                     categories.map((category, index) => (
                         <li
                             key={index}
-                            onClick={() => setActiveCategory(category)}
-                            className={activeCategory.id === category.id ? 'active' : ''}
+                            onClick={() => dispatch(setCategoryId(category.id))}
+                            className={categoryId === category.id ? 'active' : ''}
                         >{category.title}</li>
                     ))
                 }

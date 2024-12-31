@@ -1,0 +1,5 @@
+[
+  { "type": "rating", "title": "популярности" },
+  { "type": "price", "title": "цене" },
+  { "type": "title", "title": "алфавиту" }
+]
