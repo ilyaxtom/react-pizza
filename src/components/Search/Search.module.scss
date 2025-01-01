@@ -3,4 +3,17 @@
   padding: 10px 16px;
   opacity: 0.9;
   border-radius: 15px;
+  border: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+
+  input {
+    border: none;
+    font-size: 16px;
+  }
+
+  img {
+    width: 15px;
+    height: 15px;
+  }
 }

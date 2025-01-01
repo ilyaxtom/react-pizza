@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from "react-redux";
+import axios from "axios";
 import Categories from "../components/Categories.jsx";
 import Sort from "../components/Sort.jsx";
 import Skeleton from "../components/Skeleton.jsx";
@@ -16,17 +17,17 @@ function Home() {
     const activeCategory = useSelector((state) => state.filter.categoryId);
     const activeSort = useSelector((state) => state.filter.sort);
 
-    const search = searchValue ? `&search=${searchValue}` : '';
-    const sort = `&sortBy=${activeSort.type}&order=${activeSort.type === 'title' ? 'asc' : 'desc'}`;
-    const category = activeCategory === 0 ? "" : `&category=${activeCategory}`;
-
     React.useEffect(() => {
-        fetch(`https://676ff962b353db80c3240e51.mockapi.io/pizza/items?page=${currentPage + 1}&limit=4${search}${sort}${category}`)
-            .then(res => res.json())
-            .then(data => {
-                setItems(data);
-                setIsLoading(false);
-            });
+        const search = searchValue ? `&search=${searchValue}` : '';
+        const sort = `&sortBy=${activeSort.type}&order=${activeSort.type === 'title' ? 'asc' : 'desc'}`;
+        const category = activeCategory === 0 ? "" : `&category=${activeCategory}`;
+
+        axios.get(`https://676ff962b353db80c3240e51.mockapi.io/pizza/items?page=${currentPage + 1}&limit=4${search}${sort}${category}`)
+        .then(res => {
+            setItems(res.data);
+            setIsLoading(false);
+        });
+
         window.scrollTo(0, 0);
     }, [currentPage, searchValue, activeSort, activeCategory]);
 
