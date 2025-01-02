@@ -9,7 +9,7 @@ const initialState = {
     }
 }
 
-export const counterSlice = createSlice({
+export const filterSlice = createSlice({
     name: 'filter',
     initialState,
     reducers: {
@@ -23,13 +23,22 @@ export const counterSlice = createSlice({
             state.currentPage = action.payload;
         },
         setFilters(state, action) {
-            state.categoryId = Number(action.payload.categoryId);
-            state.currentPage = Number(action.payload.currentPage);
-            state.sort = action.payload.sort;
+            if (Object.keys(action.payload).length) {
+                state.categoryId = Number(action.payload.categoryId);
+                state.currentPage = Number(action.payload.currentPage);
+                state.sort = action.payload.sort;
+            } else {
+                state.categoryId = 0;
+                state.currentPage = 0;
+                state.sort = {
+                    type: 'rating',
+                    title: 'популярности'
+                }
+            }
         }
     },
 })
 
-export const { setCategoryId, setSort, setCurrentPage, setFilters } = counterSlice.actions
+export const { setCategoryId, setSort, setCurrentPage, setFilters } = filterSlice.actions
 
-export default counterSlice.reducer
+export default filterSlice.reducer

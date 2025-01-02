@@ -7,14 +7,27 @@ function Sort() {
     const [isOpen, setIsOpen] = React.useState(false);
     const sort = useSelector(state => state.filter.sort);
     const dispatch = useDispatch();
+    const sortRef = React.useRef();
 
     const selectSortType = (i) => {
         dispatch(setSort(i));
         setIsOpen(false);
     }
 
+    React.useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (!event.composedPath().includes(sortRef.current)) {
+                setIsOpen(false);
+            }
+        }
+
+        document.body.addEventListener('click', handleClickOutside);
+
+        return () => document.body.removeEventListener('click', handleClickOutside);
+    }, []);
+
     return (
-        <div className="sort">
+        <div ref={sortRef} className="sort">
             <div className="sort__label">
                 <svg
                     width="10"
