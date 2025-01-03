@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import CartItem from "../components/CartItem.jsx";
 import { useSelector, useDispatch } from "react-redux";
 import {removeAllItems} from "../redux/slices/cartSlice.js";
+import CartEmpty from "../components/CartEmpty.jsx";
 
 function Cart() {
     const dispatch = useDispatch();
@@ -11,6 +12,10 @@ function Cart() {
 
     const clearCart = () => {
         dispatch(removeAllItems());
+    }
+
+    if (items.length === 0) {
+        return ( <CartEmpty /> )
     }
 
     return (
