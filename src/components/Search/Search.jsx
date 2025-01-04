@@ -1,17 +1,18 @@
 import React from 'react';
 import debounce from 'lodash.debounce';
+import { useDispatch } from "react-redux";
+import { setSearchValue } from "../../redux/slices/filterSlice.js";
 import styles from './Search.module.scss'
-import {SearchContext} from "../../App.jsx";
 import crossIcon from "./cross.png";
 
 function Search() {
+    const dispatch = useDispatch();
     const [value, setValue] = React.useState('');
-    const {searchValue, setSearchValue} = React.useContext(SearchContext);
     const inputRef = React.useRef();
 
     const updateSearchValue = React.useCallback(
         debounce((str) => {
-            setSearchValue(str);
+            dispatch(setSearchValue(str));
         }, 500),
         []
     )
@@ -23,7 +24,7 @@ function Search() {
 
     const crossClick = () => {
         setValue('');
-        setSearchValue("");
+        dispatch(setSearchValue(""));
         inputRef.current.focus();
     }
 
@@ -35,7 +36,7 @@ function Search() {
                 value={value}
                 onChange={handleChange}
             />
-            {searchValue !== "" && <img src={crossIcon} alt="cross" onClick={crossClick}/>}
+            {value !== "" && <img src={crossIcon} alt="cross" onClick={crossClick}/>}
         </div>
     )
 }

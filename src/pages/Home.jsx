@@ -7,7 +7,6 @@ import Sort from "../components/Sort.jsx";
 import Skeleton from "../components/Skeleton.jsx";
 import PizzaBlock from "../components/PizzaBlock.jsx";
 import Pagination from "../components/Pagination/indes.jsx";
-import { SearchContext } from "../App.jsx";
 import { setCurrentPage, setFilters } from "../redux/slices/filterSlice.js";
 import sortList from "../data/sortTypes.json";
 import { fetchPizzas } from "../redux/slices/pizzaSlice.js";
@@ -20,7 +19,7 @@ function Home() {
 
     const { items, status } = useSelector(state => state.pizza);
 
-    const {searchValue} = React.useContext(SearchContext);
+    const searchValue = useSelector(state => state.filter.searchValue);
     const currentPage = useSelector(state => state.filter.currentPage);
     const activeCategory = useSelector(state => state.filter.categoryId);
     const activeSort = useSelector(state => state.filter.sort);
@@ -78,7 +77,7 @@ function Home() {
         window.scrollTo(0, 0);
 
         if (!isSearch.current) {
-            getPizzas();
+             getPizzas();
         }
 
         isSearch.current = false;
