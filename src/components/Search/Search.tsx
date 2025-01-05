@@ -5,10 +5,10 @@ import { setSearchValue } from "../../redux/slices/filterSlice.js";
 import styles from './Search.module.scss'
 import crossIcon from "./cross.png";
 
-function Search() {
+const Search: React.FC = () => {
     const dispatch = useDispatch();
     const [value, setValue] = React.useState('');
-    const inputRef = React.useRef();
+    const inputRef = React.useRef<HTMLInputElement>(null);
 
     const updateSearchValue = React.useCallback(
         debounce((str) => {
@@ -17,15 +17,15 @@ function Search() {
         []
     )
 
-    const handleChange = (e) => {
-        setValue(e.target.value);
-        updateSearchValue(e.target.value);
+    const handleChange = (event: any) => {
+        setValue(event.target.value);
+        updateSearchValue(event.target.value);
     }
 
     const crossClick = () => {
         setValue('');
         dispatch(setSearchValue(""));
-        inputRef.current.focus();
+        inputRef.current?.focus();
     }
 
     return (

@@ -1,14 +1,12 @@
-import React from 'react';
+import React from "react";
 import { Routes, Route } from 'react-router-dom';
 import './scss/app.scss';
-import Header from "./components/Header.jsx";
-import Home from "./pages/Home.jsx";
-import Cart from "./pages/Cart.jsx";
-import NotFound from "./pages/NotFound.jsx";
+import Header from "./components/Header.js";
+import Home from "./pages/Home.js";
+import Cart from "./pages/Cart.js";
+import NotFound from "./pages/NotFound.js";
 
-function App() {
-    const [searchValue, setSearchValue] = React.useState('');
-
+function App(): React.ReactElement {
     return (
         <div className="wrapper">
           <Header />
