@@ -1,11 +1,15 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { setSort } from '../redux/slices/filterSlice.js';
-import sortTypes from '../data/sortTypes.json';
+import {useDispatch, useSelector} from 'react-redux';
+import {setSort, SortItem, SortTypes} from '../redux/slices/filterSlice.js';
 
-type SortItem = {
-    type: string;
-    title: string;
+export const sortList: SortItem[] = [
+    { type: SortTypes.RATING, title: "популярности" },
+    { type: SortTypes.PRICE, title: "цене" },
+    { type: SortTypes.TITLE, title: "алфавиту" }
+]
+
+type PopupClick = MouseEvent & {
+    composedPath: () => Node[];
 }
 
 const Sort: React.FC = () => {
@@ -20,8 +24,10 @@ const Sort: React.FC = () => {
     }
 
     React.useEffect(() => {
-        const handleClickOutside = (event: any) => {
-            if (!event.composedPath().includes(sortRef.current)) {
+        const handleClickOutside = (event: MouseEvent) => {
+            const _event = event as PopupClick;
+
+            if (sortRef.current && !_event.composedPath().includes(sortRef.current)) {
                 setIsOpen(false);
             }
         }
@@ -54,7 +60,7 @@ const Sort: React.FC = () => {
             {isOpen &&
                 (<div className="sort__popup">
                     <ul>
-                        {sortTypes.map((item, i) => (
+                        {sortList.map((item, i) => (
                             <li
                                 key={i}
                                 className={item.title === sort.title ? "active" : ""}

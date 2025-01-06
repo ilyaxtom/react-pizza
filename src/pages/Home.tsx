@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import qs from 'qs';
 import { useNavigate } from 'react-router-dom';
 import Categories from "../components/Categories";
@@ -8,21 +8,21 @@ import Skeleton from "../components/Skeleton";
 import PizzaBlock from "../components/PizzaBlock";
 import Pagination from "../components/Pagination/indes";
 import { setCurrentPage, setFilters } from "../redux/slices/filterSlice.js";
-import sortList from "../data/sortTypes.json";
-import { fetchPizzas } from "../redux/slices/pizzaSlice.js";
+import {fetchPizzas, SearchPizzaParams} from "../redux/slices/pizzaSlice.js";
+import { useAppDispatch } from "../redux/store";
 
 const Home: React.FC = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const isSearch = React.useRef(false);
     const isMounted = React.useRef(false);
 
-    const { items, status } = useSelector(state => state.pizza);
+    const { items, status } = useSelector((state: any) => state.pizza);
 
-    const searchValue = useSelector(state => state.filter.searchValue);
-    const currentPage = useSelector(state => state.filter.currentPage);
-    const activeCategory = useSelector(state => state.filter.categoryId);
-    const activeSort = useSelector(state => state.filter.sort);
+    const searchValue = useSelector((state: any) => state.filter.searchValue);
+    const currentPage = useSelector((state: any) => state.filter.currentPage);
+    const activeCategory = useSelector((state: any) => state.filter.categoryId);
+    const activeSort = useSelector((state: any) => state.filter.sort);
 
     const getPizzas = async () => {
         const search = searchValue ? `&search=${searchValue}` : '';
@@ -30,7 +30,6 @@ const Home: React.FC = () => {
         const category = activeCategory === 0 ? "" : `&category=${activeCategory}`;
 
         dispatch(
-            // @ts-ignore
             fetchPizzas({
                 search,
                 sort,
@@ -44,27 +43,34 @@ const Home: React.FC = () => {
 
     React.useEffect(() => {
         if (isMounted.current) {
-            const queryParams = qs.stringify({
+            const queryParams = {
                 sortBy: activeSort.type,
-                category: activeCategory,
+                category: activeCategory > 0 ? activeCategory : null,
                 page: currentPage,
-            });
+            };
 
-            navigate(`?${queryParams}`);
+            const queryString = qs.stringify(queryParams, { skipNulls: true });
+
+            navigate(`?${queryString}`);
+        }
+
+        if (!window.location.search) {
+            dispatch(fetchPizzas({} as SearchPizzaParams))
         }
         isMounted.current = true;
-    }, [currentPage, activeSort, activeCategory]);
+    }, [currentPage, activeSort, activeCategory, searchValue]);
 
     React.useEffect(() => {
         // if (window.location.search) {
-        //     const params = qs.parse(window.location.search.substring(1));
+        //     const params = qs.parse(window.location.search.substring(1)) as unknown as SearchParams;
         //
         //     const sort = sortList.find(obj => obj.type === params.sortBy);
         //
         //     dispatch(
         //         setFilters({
-        //             categoryId: params.category,
-        //             currentPage: params.page,
+        //             searchValue: params.search
+        //             categoryId: +params.category,
+        //             currentPage: +params.page,
         //             sort,
         //         })
         //     );
@@ -84,6 +90,13 @@ const Home: React.FC = () => {
         isSearch.current = false;
     }, [currentPage, searchValue, activeSort, activeCategory]);
 
+    const skeletonBlocks = [...new Array(6)].map((_, i) => (
+        <Skeleton key={i}/>
+    ));
+    const itemsBlocks = items.map((pizzaObj: any, index: number) => (
+        <PizzaBlock key={index} {...pizzaObj} />
+    ));
+
     return (
         <>
             <div className="content__top">
@@ -92,15 +105,9 @@ const Home: React.FC = () => {
             </div>
             <h2 className="content__title">Все пиццы</h2>
             <div className="content__items">
-                {
-                    status === 'loading' ?
-                        [...new Array(6)].map((_, i) => (<Skeleton key={i}/>)) :
-                        items.map((pizzaObj: any, index: number) => (
-                            <PizzaBlock key={index} {...pizzaObj} />
-                        ))
-                }
+                { status === 'loading' ? skeletonBlocks : itemsBlocks }
             </div>
-            <Pagination currentPage={currentPage} onChangePage={(number: number) => dispatch(setCurrentPage(number))} />
+            <Pagination currentPage={currentPage} onChangePage={(page: number) => dispatch(setCurrentPage(page))} />
         </>
     )
 }

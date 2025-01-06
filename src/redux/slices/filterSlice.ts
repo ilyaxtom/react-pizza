@@ -1,11 +1,29 @@
-import { createSlice } from '@reduxjs/toolkit'
+import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 
-const initialState = {
+export enum SortTypes {
+    RATING = 'rating',
+    PRICE = 'price',
+    TITLE = 'title'
+}
+
+export type SortItem = {
+    type: SortTypes;
+    title: string;
+}
+
+interface FilterSliceState {
+    searchValue: string;
+    categoryId: number;
+    currentPage: number;
+    sort: SortItem;
+}
+
+const initialState: FilterSliceState = {
     searchValue: "",
     categoryId: 0,
     currentPage: 0,
     sort: {
-        type: 'rating',
+        type: SortTypes.RATING,
         title: 'популярности'
     }
 }
@@ -14,19 +32,19 @@ export const filterSlice = createSlice({
     name: 'filter',
     initialState,
     reducers: {
-        setSearchValue: (state, action) => {
+        setSearchValue: (state, action: PayloadAction<string>) => {
             state.searchValue = action.payload;
         },
-        setCategoryId(state, action) {
+        setCategoryId(state, action: PayloadAction<number>) {
             state.categoryId = action.payload;
         },
-        setSort(state, action) {
+        setSort(state, action: PayloadAction<SortItem>) {
             state.sort = action.payload;
         },
-        setCurrentPage(state, action) {
+        setCurrentPage(state, action: PayloadAction<number>) {
             state.currentPage = action.payload;
         },
-        setFilters(state, action) {
+        setFilters(state, action: PayloadAction<FilterSliceState>) {
             if (Object.keys(action.payload).length) {
                 state.categoryId = Number(action.payload.categoryId);
                 state.currentPage = Number(action.payload.currentPage);
@@ -35,7 +53,7 @@ export const filterSlice = createSlice({
                 state.categoryId = 0;
                 state.currentPage = 0;
                 state.sort = {
-                    type: 'rating',
+                    type: SortTypes.RATING,
                     title: 'популярности'
                 }
             }
@@ -45,4 +63,4 @@ export const filterSlice = createSlice({
 
 export const { setCategoryId, setSort, setCurrentPage, setFilters, setSearchValue } = filterSlice.actions
 
-export default filterSlice.reducer
+export default filterSlice.reducer;

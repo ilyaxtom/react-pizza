@@ -17,14 +17,14 @@ const Search: React.FC = () => {
         []
     )
 
-    const handleChange = (event: any) => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setValue(event.target.value);
         updateSearchValue(event.target.value);
     }
 
     const crossClick = () => {
         setValue('');
-        dispatch(setSearchValue(""));
+        dispatch(setSearchValue(''));
         inputRef.current?.focus();
     }
 
