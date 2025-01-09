@@ -1,10 +1,11 @@
-import React from "react";
+import React, {Suspense} from "react";
 import { Routes, Route } from 'react-router-dom';
 import './scss/app.scss';
 import Header from "./components/Header.js";
 import Home from "./pages/Home.js";
-import Cart from "./pages/Cart.js";
-import NotFound from "./pages/NotFound.js";
+
+const Cart = React.lazy(() => import("./pages/Cart"));
+const NotFound = React.lazy(() => import("./pages/NotFound"));
 
 function App(): React.ReactElement {
     return (
@@ -14,8 +15,21 @@ function App(): React.ReactElement {
             <div className="container">
               <Routes>
                   <Route path="/" element={<Home />} />
-                  <Route path="/cart" element={<Cart />} />
-                  <Route path="*" element={<NotFound />} />
+                  <Route
+                      path="/cart" element={
+                          <Suspense fallback={<div>Loading...</div>}>
+                              <Cart />
+                          </Suspense>
+                      }
+                  />
+                  <Route
+                      path="*"
+                      element={
+                          <Suspense fallback={<div>Loading...</div>}>
+                              <NotFound />
+                          </Suspense>
+                      }
+                  />
               </Routes>
             </div>
           </div>
